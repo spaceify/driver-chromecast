@@ -8,28 +8,39 @@
 	<script src="http://edge.spaceify.net/libs/spaceifyinitialize.js?jquery"></script>					<!-- Get Spaceify's classes and jQuery. Wait for spaceifyReady event! -->
 
 	<link href="index.css" rel="stylesheet" type="text/css" media="screen">
-<!--
+
 	<script type="text/javascript">
 		var spaceify = null;
+		var driverChromecast = null;
+		var videoPlayerService = null;
+		var imageViewerService = null;
+		
 		var driverPhilipsHue = null;
 		var driverPhilipsHueId = "default";
 		var lightsService = null;
-		
+
 
 			// DOM AND EVENTS -- -- -- -- -- -- -- -- -- -- //
 		window.addEventListener("spaceifyReady", function()
 			{
+			console.log("spaceify ready event");
+			spaceify = new SpaceifyApplication();
+
 			var query = new SpaceifyNetwork().parseQuery(window.location.href);		// driver-philips-hue id could be passed in the URL
 			driverPhilipsHueId = ("driverPhilipsHueId" in query ? query.driverPhilipsHueId : "default");
 
-			spaceify = new SpaceifyApplication();
-
-			driverPhilipsHue = new PhilipsHueDriver();
-			spaceify.start(driverPhilipsHue, "spaceify/driverphilipshue");
+			driverChromecast = new ChromecastDriver();
+			spaceify.start(driverChromecast, "spaceify/driverchromecast");
+			//spaceify.start(driverChromecast, "spaceify/driverphilipshue");
 			});
 
-			// PhilipsHueDriver -- -- -- -- -- -- -- -- -- -- //
 		function PhilipsHueDriver()
+			{
+			var self = this;
+		}
+
+			// ChromecastDriver -- -- -- -- -- -- -- -- -- -- //
+		function ChromecastDriver()
 			{
 			var self = this;
 
@@ -57,15 +68,63 @@
 
 				*******/	
 
-				var privateService = spaceify.getRequiredService("spaceify.org/services/lights/private/driver_philips_hue");
+				/*var privateService = spaceify.getRequiredService("spaceify.org/services/lights/private/driver_philips_hue");
 				privateService.callRpc("getReachableLights",[], self, function(err, data)
 					{
 					console.log("getReachableLights Rpc call returned "+err+data);
+					});*/
+				console.log("test1");
+
+				/*var serviceConnection = new SpaceifyService();
+				serviceConnection.connect("spaceify.org/services/lights", function(err, lightsServiceTmp)
+					{
+					console.log("123 err="+err+" lights="+lightsServiceTmp)
+
+					lightsService = lightsServiceTmp;
+
+					lightsService.callRpc("getLights",[], self, function(err, data)
+						{
+						console.log("getReachableLights Rpc call returned err="+err+" data=");
+						console.log(data);
+						});
+					console.log(lightsService);
+					});*/
+
+
+				console.log("test2");
+
+				var serviceConnection = new SpaceifyService();
+				serviceConnection.connect("spaceify.org/services/media/videoplayer", function(err, videoPlayerServiceTmp)
+					{
+					console.log("123 err="+err+" videoPlayerServiceTmp="+videoPlayerServiceTmp)
+
+					videoPlayerService = videoPlayerServiceTmp;
+
+					var paramsObj = {mediaUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/big_buck_bunny_1080p.mp4", mimeType: "video/mp4"};
+					videoPlayerService.callRpc("playVideo",[null, paramsObj],  self, function(err, data)
+						{
+						console.log("videoPlayerService Rpc call 'playVideo' returned err="+JSON.stringify(err)+" data="+JSON.stringify(data));
+						console.log(data);
+						});
+
+					console.log(videoPlayerService);
 					});
 
+				/*var serviceConnection = new SpaceifyService();
+				serviceConnection.connect("spaceify.org/services/media/videoplayer", function(err, videoPlayerServiceTmp)
+					{
+					console.log("123 err="+err+" videoPlayerServiceTmp="+videoPlayerServiceTmp)
+					videoPlayerService = videoPlayerServiceTmp;
+					//videoPlayerService.callRpc("getReachableLights",[], self, function(err, data)
+					//	{
+					//	console.log("getReachableLights Rpc call returned "+err+data);
+					//	});							
+					console.log(videoPlayerService);
+					});*/
 
-								
-				//lightsService = spaceify.getRequiredService("spaceify.org/services/lights");
+				console.log("test3");
+				//videoPlayerService = spaceify.getProvidedService("spaceify.org/services/media/videoplayer");
+				//imageViewerService = spaceify.getProvidedService("spaceify.org/services/media/imageviewer");
 				//lightsService.setConnectionListener(connectionListener);
 				//lightsService.setDisconnectionListener(disconnectionListener);
 				
@@ -115,15 +174,44 @@
 				console.log(errstr);
 				}
 
-			}
-			
+			};
+
+		var testTest = function()
+			{
+			alert("toimii");
+			};
+
+		var testPlayVideo = function()
+			{
+			var paramsObj = {mediaUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/big_buck_bunny_1080p.mp4", mimeType: "video/mp4"};
+			videoPlayerService.callRpc("playVideo",[null, paramsObj],  self, function(err, data)
+				{
+				console.log("videoPlayerService Rpc call returned err="+JSON.stringify(err)+" data="+JSON.stringify(data));
+				});
+			};
+
+		var testShowImage = function()
+			{
+			var paramsObj = {mediaUrl: "http://www.wallpaperawesome.com/wallpapers-awesome/wallpapers-full-hd-1920-1080-widescreen-awesome/z-wallpaper-mother-nature-1920-x-1080-full-hd.jpg", mimeType: "image/jpeg"};
+			imageViewerService.callRpc("showImage",[null, paramsObj],  self, function(err, data)
+				{
+				console.log("imageViewerService Rpc call returned "+JSON.stringify(err)+JSON.stringify(data));
+				});
+			};
+
 	</script>
--->
 </head>
 
 <body>
 	<div id="message_div" class="messagediv"></div>
 	<h1>Chromecast driver UI</h1>
+
+	<button onClick="testTest()">testTest</button>
+
+	<button onClick="testPlayVideo()">Play video</button>
+
+	<button onClick="testShowImage()">Show image</button>
+
 </body>
 
 </html>
