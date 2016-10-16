@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+
+	<title>Chromecast driver</title>
+
+	<script src="http://edge.spaceify.net/libs/spaceifyinitialize.js?jquery"></script>					<!-- Get Spaceify's classes and jQuery. Wait for spaceifyReady event! -->
+
+	<link href="index.css" rel="stylesheet" type="text/css" media="screen">
+<!--
+	<script type="text/javascript">
+		var spaceify = null;
+		var driverPhilipsHue = null;
+		var driverPhilipsHueId = "default";
+		var lightsService = null;
+		
+
+			// DOM AND EVENTS -- -- -- -- -- -- -- -- -- -- //
+		window.addEventListener("spaceifyReady", function()
+			{
+			var query = new SpaceifyNetwork().parseQuery(window.location.href);		// driver-philips-hue id could be passed in the URL
+			driverPhilipsHueId = ("driverPhilipsHueId" in query ? query.driverPhilipsHueId : "default");
+
+			spaceify = new SpaceifyApplication();
+
+			driverPhilipsHue = new PhilipsHueDriver();
+			spaceify.start(driverPhilipsHue, "spaceify/driverphilipshue");
+			});
+
+			// PhilipsHueDriver -- -- -- -- -- -- -- -- -- -- //
+		function PhilipsHueDriver()
+			{
+			var self = this;
+
+			var timeOut = null;
+			var contentType = "";
+
+			// Called by spaceify init on success. Function needs to be named exactly like this. 
+			
+			self.start = function()
+				{
+				/*****
+ 
+				The following non-commented code works because spaceify init automatically opens connections to	
+				all open services provided by the app itself (declared in manifest). If you want to use some other service,
+				you need to open a connection to it dynamically like this: 
+				
+				var serviceConnection = new SpaceifyService();
+				serviceConnection.connect("spaceify.org/services/lights/private/driver_philips_hue", function(err, privateService)
+					{				
+					privateService.callRpc("getReachableLights",[], self, function(err, data)
+						{
+						console.log("getReachableLights Rpc call returned "+err+data);
+						});							
+					});
+
+				*******/	
+
+				var privateService = spaceify.getRequiredService("spaceify.org/services/lights/private/driver_philips_hue");
+				privateService.callRpc("getReachableLights",[], self, function(err, data)
+					{
+					console.log("getReachableLights Rpc call returned "+err+data);
+					});
+
+
+								
+				//lightsService = spaceify.getRequiredService("spaceify.org/services/lights");
+				//lightsService.setConnectionListener(connectionListener);
+				//lightsService.setDisconnectionListener(disconnectionListener);
+				
+				//lightsService.exposeRpcMethod("loadContent", self, loadContent);
+				
+
+				//connectionListener(/*lightsService.getId()*/);
+				}
+
+			// Called by spaceify init on success. Function needs to be named exactly like this. 
+
+			self.fail = function()
+				{
+				}
+				
+				// CONNECTION LISTENERS -- -- -- -- -- -- -- -- -- -- //
+			var connectionListener = function(connectionId)
+				{
+				showMessage("Connected to the lights hub.");
+
+				//lightsService.callRpc("lightsConnect", [driverPhilipsHueId], null, null);
+				}
+
+			var disconnectionListener = function(connectionId)
+				{
+				showMessage("No connection to the lights hub.");
+				}
+
+				// EXPOSED RPC METHODS -- -- -- -- -- -- -- -- -- -- //
+
+
+				// -- -- -- -- -- -- -- -- -- -- //
+
+			var showMessage = function(errstr)
+				{
+				$("#message_div").empty().append($.parseHTML(errstr)).show();
+
+				if(timeOut != null)
+					clearTimeout(timeOut);
+
+				timeOut = setTimeout(function()
+					{
+					timeOut = null;
+					$("#message_div").hide();
+					}, 5000);
+
+				console.log(errstr);
+				}
+
+			}
+			
+	</script>
+-->
+</head>
+
+<body>
+	<div id="message_div" class="messagediv"></div>
+	<h1>Chromecast driver UI</h1>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+{
+  "provides_services": [
+    {
+      "service_name": "spaceify.org/services/media/videoplayer",
+      "service_type": "open"
+    },
+    {
+      "service_name": "spaceify.org/services/media/imageviewer",
+      "service_type": "open"
+    },
+    {
+      "service_name": "spaceify.org/services/lights/private/driver_chromecast",
+      "service_type": "open"
+    }	
+  ],
+  "name": "Chromecast driver",
+  "unique_name": "spaceify/driverchromecast",
+  "version": "0.1.0",
+  "type": "sandboxed",
+  "category": "driver",
+  "install_commands": ["npm install -g mdns","npm install -g castv2-client"],
+  "start_command": "node driver-chromecast",
+  "developer": {
+    "name": "Spaceify Oy",
+    "url": "http://spaceify.net",
+    "email": "admin@spaceify.net"
+  },
+  "short_description": "Driver for Google Chromecast.",
+  "appstore_description": "With this driver you can use Google Chromecast devices as video and image viewers.",
+  "license": "MIT",
+  "creation_date": "2016-10-16 17:00:00",
+  "implements": [
+    "WEB_SERVER"
+  ],
+  "images": [
+    {
+      "file": "icon.png"
+    }
+  ],
+  "unique_directory": "spaceify/driverchromecast/"
+}
